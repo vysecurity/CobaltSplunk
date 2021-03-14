@@ -5,7 +5,7 @@
 Vincent Yiu (@vysecurity)
 
 ## Blog Post
-https://vincentyiu.co.uk/cobaltsplunk/
+https://vincentyiu.com/red-team/attack-infrastructure/cobaltsplunk
 
 ## What is CobaltSplunk?
 
