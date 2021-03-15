@@ -19,6 +19,16 @@ CobaltSplunk is a Splunk Application that knows how to 1) ingest Cobalt Strike r
 
 Manually:
 
+0) Install Splunk
+	We can grab _Splunk Enterprise Trial_ (Splunk Free) which gives us 60 days of enterprise features evaluation period.
+	During that time we'll be limited to upload no more than 500MB of data per file.
+	Download your `splunk-8.1.2-545206cc9f70-linux-2.6-amd64.deb` package, then hit:
+	`$ sudo dpkg -i splunk-8.1.2-545206cc9f70-linux-2.6-amd64.deb`
+
+	After getting Splunk installed, enable it to run on boot-start as well as setup Administration account's username & password:
+
+	`$ sudo /opt/splunk/bin/splunk enable boot-start`
+
 1) Download Cobalt.spl
 2) Install as application: Apps -> Manage Apps -> Install app from file
    or using CLI: `$ /opt/splunk/bin/splunk install app <Cobalt.spl> -auth User:Password`
