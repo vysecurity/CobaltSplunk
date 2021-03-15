@@ -2,9 +2,9 @@
 
 ## Authors
 
-- Vincent Yiu (@vysecurity) - Original author of CobaltSplunk
-- Mariusz B. /mgeeky (@mariuszbit) - General App refactor introducing support for CobaltStrike 4.3+, tracking screenshots/keystrokes/teamserver_events, reworking Raport queries and polishing other things. 
-- ADARMA ( tomasz.dziwok@adamra.com ) - Based on his "VirusTotal Malware Lookup" / TA-VirusTotal Splunk App, VirusTotal integration is being added to CobaltSplunk.
+- **Vincent Yiu (@vysecurity)** - Original author of CobaltSplunk
+- **Mariusz B. /mgeeky (@mariuszbit)** - General App refactor introducing support for CobaltStrike 4.3+, tracking screenshots/keystrokes/teamserver_events, reworking Raport queries and polishing other things. 
+- **ADARMA ( tomasz.dziwok@adamra.com )** - Based on his "VirusTotal Malware Lookup" / TA-VirusTotal Splunk App, VirusTotal integration is being added to CobaltSplunk.
 
 ## Blog Post
 
