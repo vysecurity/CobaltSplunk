@@ -1,0 +1,333 @@
+<dashboard>
+    <label>README</label>
+    <row>
+        <html>
+            <p>App:                CobaltSplunk 
+                <br />
+Current Version:    v0.2  
+                <br />
+Authors:            Vincent Yiu, Mariusz B. / mgeeky, ADARMA ( tomasz.dziwok@adamra.com ) 
+                <br />
+            </p>
+            <h1 id="cobaltsplunk">CobaltSplunk</h1>
+            <p>
+    This app is used to visualise Cobalt Strike Penetration Testing framework C2 and web communication logs in your Splunk installation.<br/>
+The custom Splunk app exposes a set of field extractors, predefined dashboards, reports and Splunk Alerts to facilitate logs review, indexing and search. 
+                <br/>
+            </p>
+<hr/>
+            <h2 id="gettingstarted">Getting Started</h2>
+            <p>To build your first queries searching through Cobalt Strike logs, go to the Search view and open your query with one of the helper operators:
+
+
+                <ul>
+                    <li>
+                        <code>index=cobalt</code> - Tells Splunk to search through cobalt-related events
+                    </li>
+                    <li>
+                        <code>sourcetype=beacon_log</code> - Tells Splunk to search through specific logfiles/sourcetypes, further discussed below.
+                    </li>
+                    <li>
+                        <code>source="*beacon_137*.log"</code> - Examines specific source file with wildcards in its path.
+                    </li>
+                </ul>
+
+After any of these operators are specified, you can start expanding your search queries by adding further statements, values and specific search conditions.<br/>
+
+Example: <br/>
+                <i>To find commands issued by specific operator:</i><br/>
+                <code>sourcetype=beacon_log type=input operator=mariusz</code><br/>
+
+However this search query will return Events, which is not something especially readable and digestible. Therefore we can enhance that search query bit further to visualise it in form of a table perhaps:<br/>
+
+
+                <pre>
+sourcetype=beacon_log type=input operator=mariusz
+| table _time host operator command
+| sort _time
+</pre>
+<br/>
+A bit better. How about filtering only entries that were issued on a specific host? No problem at all:
+<br/>
+                <pre>
+sourcetype=beacon_log type=input operator=mariusz host="192.168.50.14"
+| table _time host operator command
+| sort _time
+</pre>
+                <br/>
+                <i>WARNING: VirusTotal querying is not yet supported (work is in progress)</i>
+
+<br/>
+This app uses optional setup. App setup can be accessed from Splunk's "Manage Apps" menu.<br/>
+The following options are available:
+<br/>
+            </p>
+<hr/>
+            <h3 id="virustotal_api_key">VirusTotal API Access Token</h3>
+            <p>
+    You can incorporate automated VirusTotal IOCs (Indicators of Compromise) hash lookups based on indicators 
+    <br/>extracted from your Teamserver logs. To do so, the Virus Total API key needs to be specified.
+</p>
+<hr/>
+            <h2 id="appfunctionality">App Functionality</h2>
+            <p>
+    This Splunk app collects all events coming from Cobalt Strike data inputs in <br/>
+                <code>index=cobalt</code> and defines several useful 
+                <i>sourcetypes</i> based on supplied Cobalt Strike logs contents. 
+                <br/>
+                <br/>
+Defined <b>Sourcetypes</b>:
+                <br/>
+                <ul>
+                    <li>
+                        <code>sourcetype=beacon_log</code> - Contains various log entries from 
+                        <code>beacon_*.log</code> files.
+                    </li>
+                    <li>
+                        <code>sourcetype=weblog</code> - Teamserver Web Server access log entries: 
+                        <code>weblog_*.log</code> files.
+                    </li>
+                    <li>
+                        <code>sourcetype=screenshots</code> - List of screenshots taken by Beacons 
+                        <code>screenshots.log</code> files.
+                    </li>
+                    <li>
+                        <code>sourcetype=teamserver_events</code> - Teamserver events log entries: 
+                        <code>events.log</code> files.
+                    </li>
+                    <li>
+                        <code>sourcetype=keystrokes</code> - Keystrokes collected across Beacons 
+                        <code>keystrokes_*.log</code> files.
+                    </li>
+                </ul>
+
+These sourcetypes can facilitate searches by introducing pre-built regular expressions that extract interesting fields.
+
+Each of these entries bring its own set of extracted fields, described below:
+
+            </p>
+<hr/>
+            <h3>
+                <b>sourcetype=beacon_log</b>
+            </h3>
+
+Example log entries:
+
+            <pre>
+04/09 11:26:34 UTC [metadata] beacon_1830434858 -&gt; 172.16.100.173; computer: DCORP-STD173; user: SYSTEM *; process: dllhost.exe; pid: 4364; os: Windows; version: 10.0; beacon arch: x64 (x64)
+04/09 11:26:33 UTC [output]
+established link to parent beacon: 172.16.100.173
+
+04/09 11:26:34 UTC [task] &lt;&gt; Tasked Beacon to find svchost.exe running as SYSTEM * and make it the PPID.
+04/09 11:26:34 UTC [input] &lt;admin&gt; blockdlls start
+04/09 11:26:34 UTC [task] &lt;T1106&gt; Tasked beacon to block non-Microsoft binaries in child processes
+04/09 11:26:36 UTC [checkin] host called home, sent: 417607 bytes
+04/09 11:26:41 UTC [output]
+</pre>
+
+Available fields:
+
+            <ul>
+                <li>
+                    <code>date_time</code> - Log entry timestamp
+                </li>
+                <li>
+                    <code>metadata</code> - Metadata log line, emitted when a Beacon event is processed. Contains compromised system details.
+                </li>
+                <li>
+                    <code>checkin</code> - Checkin log entries
+                </li>
+                <li>
+                    <code>task</code> - The line documenting what Beacon did at that time (
+                    <u>Tasked beacon to...</u>)
+                </li>
+                <li>
+                    <code>input</code> - Commands issued by operators to their beacons
+                </li>
+                <li>
+                    <code>output</code> - Outputs from issued commands as returned by Beacons
+                </li>
+                <li>
+                    <code>type</code> - Type of log line, among examples: input, output, task, metadata, indicator
+                </li>
+                <li>
+                    <code>tactic</code> - MITRE ATT&amp;CK Tactic ID as reported by Cobalt Strike
+                </li>
+                <li>
+                    <code>ioc</code> - IOCs stored in Teamserver logs issued whenever Operator is uploading a file to compromised box.
+                </li>
+            </ul>
+<hr/>
+            <h3>
+                <b>sourcetype=weblog</b>
+            </h3>
+
+Example log entries:
+
+            <pre>
+82.221.105.6 unknown unknown [11/26 00:40:30 UTC] "GET /favicon.ico" 404 0 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0 - Original IP 82.221.105.6"
+82.221.105.6 unknown unknown [11/26 06:44:34 UTC] "GET /favicon.ico" 404 0 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0 - Original IP 82.221.105.6"
+</pre>
+
+Available fields:
+
+            <ul>
+                <li>
+                    <code>weblog</code> - A single line containing values such as ip, date_time, request, status_code, user_agent
+                </li>
+            </ul>
+<hr/>
+            <h3>
+                <b>sourcetype=screenshots</b>
+            </h3>
+
+Example log entries:
+
+            <pre>
+12/17 09:59:20 UTC  COMMANDOVM  1   commando    screen_5aa4e767_767910548.jpg   Firefox - My Bank
+12/17 09:59:20 UTC  COMMANDOVM  1   commando    screen_5dad030e_1036629838.jpg  C:\Windows\System32\cmd.exe
+</pre>
+
+Available fields:
+
+            <ul>
+                <li>
+                    <code>screenshot</code> - A single line containing values such as date_time, computer, screenshot, user, screenshot_title
+                </li>
+            </ul>
+<hr/>
+            <h3>
+                <b>sourcetype=teamserver_events</b>
+            </h3>
+
+Example log entries:
+
+            <pre>
+11/27 00:33:15 UTC *** mariusz quit
+11/27 11:37:20 UTC *** mariusz (127.0.0.1) joined
+11/27 11:47:04 UTC *** initial beacon from commando *@192.168.56.6 (COMMANDOVM)
+11/27 11:52:27 UTC *** Tasked Beacon (id: 608668554, user: COMMANDOVM\commando *, 192.168.56.6@2884) to exit
+</pre>
+
+Available fields:
+
+            <ul>
+                <li>
+                    <code>date_time</code> - A log entry timestamp
+                </li>
+                <li>
+                    <code>event</code> - A field containing entire event message
+                </li>
+                <li>
+                    <code>initial_beacon</code> - An event with initial beacon check-in
+                </li>
+                <li>
+                    <code>joined</code> - Operator joined information (authentication success)
+                </li>
+                <li>
+                    <code>quit</code> - Operator quit the server
+                </li>
+                <li>
+                    <code>hosted_file</code> - A file was hosted on the Teamserver webserver
+                </li>
+                <li>
+                    <code>beacon_exit</code> - Beacon was tasked to exit
+                </li>
+                <li>
+                    <code>chat</code> - An operator posted a message on Teamserver chat.
+                </li>
+            </ul>
+            <h3>
+                <b>sourcetype=keystrokes</b>
+            </h3>
+
+Example log entries:
+
+
+            <pre>
+12/10 14:16:49 UTC Received keystrokes from commando in desktop 1
+
+Mozilla Firefox - My Bank
+=======
+start[down]
+</pre>
+
+Available fields:
+
+            <ul>
+                <li>
+                    <code>date_time</code> - A log entry timestamp
+                </li>
+                <li>
+                    <code>metadata</code> - Line containing context information such as application name, desktop number, username
+                </li>
+                <li>
+                    <code>keystrokes</code> - Extracted keystrokes data
+                </li>
+            </ul>
+<hr/>
+            <h2 id="regexes">Fields extraction regular expressions used</h2>
+
+Here is the list of regular expressions comprising the 
+            <code>props.conf</code> file that instrument Splunk's indexer:
+
+
+            <pre>
+[beacon_log]
+EXTRACT-date_time = ^(?P&lt;date_time&gt;\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+\[
+EXTRACT-metadata = ^[/A-Z0-9:\s]+\[metadata\]\s*(?P&lt;external_ip&gt;[^ ]+)\s+[&lt;&gt;-]+\s+(?P&lt;internal_ip&gt;[^;]+);\s*computer:\s*\b(?P&lt;computer&gt;[^;]+);\s*user:\s*\b(?P&lt;user&gt;[^;]+);\s*process:\s*\b(?P&lt;process_name&gt;[^;]+);\s*pid:\s*\b(?&lt;process_id&gt;[^;]+);\s*os:\s*\b(?&lt;os_main&gt;[^;]+);\s*version:\s*\b(?P&lt;os_version&gt;[^;]+)(?:;\s*build:\s*\b(?P&lt;os_build&gt;[^;]+))?;\s*beacon\s+arch:\s*(?P&lt;beacon_arch&gt;[^\s]+)
+EXTRACT-checkin = (?=[^c]*(?:checkin|c.*checkin)).+sent:\s*(?P&lt;size&gt;\d+\s+bytes)
+EXTRACT-task = ^(?=[^t]*(?:task|t.*task)).+(?P&lt;command&gt;Tasked\s+.+)$
+EXTRACT-input = (?=[^i]*(?:input|i.*input))^[^&lt;\n]*&lt;(?P&lt;operator&gt;[^&gt;]+)&gt;\s+(?P&lt;command&gt;.+)
+EXTRACT-output = ^[/A-Z0-9:\s]+\[output\]\s*^(?P&lt;output&gt;.*)
+EXTRACT-type = ^[^\[\n]*\[(?P&lt;type&gt;\w+)
+EXTRACT-tactic = ^[/A-Z0-9:\s]+\[task\]\s*&lt;(?P&lt;tactic&gt;T\d+(?:,\s*(?:T\d+))*),?\s*&gt;
+EXTRACT-ioc = ^[/A-Z0-9:\s]+\[indicator\]\s*(?P&lt;ioc_type&gt;[^:]+):\s+(?P&lt;ioc&gt;[^\s]+)\s+(?P&lt;ioc_size&gt;\d+)\s+bytes\s+(?P&lt;ioc_name&gt;.*)
+EXTRACT-process = (?i)^(?P&lt;process&gt;(?:\[System\s+Process\])|Memory Compression|System|Registry|.+\.exe)\s+(?P&lt;process_id&gt;\d+)\s+(?P&lt;parent_pid&gt;\d+)(?:\s*(?P&lt;arch&gt;x\d{2})\s+(?P&lt;user&gt;[^\s]+)?\s+(?P&lt;session&gt;\d+))?
+EXTRACT-file = ^(?P&lt;filetype&gt;[a-zA-Z])\s+(?P&lt;size&gt;\d+)\s+\b(?P&lt;filetime&gt;\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}:\d{2})\s+(?P&lt;name&gt;.*)$
+EXTRACT-listpath = ^(?P&lt;path&gt;(?:[A-Z]:\\.*)|(?:\\.*))(?:\\\*)?\s*\n^\s*[DF]\t\d+
+
+[weblog]
+EXTRACT-weblog = ^(?P&lt;ip&gt;[^ ]+)[^\[\n]*\[(?P&lt;date_time&gt;[^\]]+)\]\s+"(?P&lt;request&gt;[^"]+)"\s+(?P&lt;status_code&gt;[^ ]+)(?:[^"\n]*"){3}(?P&lt;user_agent&gt;[^"]+)
+
+[screenshots]
+EXTRACT-screenshot = ^(?P&lt;date_time&gt;\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+(?P&lt;computer&gt;[^\s]+)\s+\d+\s+(?P&lt;user&gt;[^\s]+)\s+(?P&lt;screenshot&gt;[^\s]+)\s+(?P&lt;screenshot_title&gt;.*)
+
+[teamserver_events]
+EXTRACT-date_time = ^(?P&lt;date_time&gt;\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+\*\*\*\s+
+EXTRACT-event = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+\*\*\*\s+(?P&lt;event&gt;.*)
+EXTRACT-initial_beacon = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+\*\*\*\s+initial\s+beacon\s+from\s+(?P&lt;user&gt;[^@]+)@(?P&lt;ip&gt;[^[\s]+)\s+\((?P&lt;computer&gt;[^\)]+)\)
+EXTRACT-joined = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+\*\*\*\s+(?P&lt;operator&gt;[^\s]+)\s+(?:\([^\)]+\)\s*)?joined
+EXTRACT-quit = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+\*\*\*\s+(?P&lt;operator&gt;[^\s]+)\s+quit
+EXTRACT-hosted_file = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+\*\*\*\s+(?P&lt;operator&gt;[^\s]+)\s+hosted\s+file\s+(?P&lt;file&gt;.*)
+EXTRACT-beacon_exit = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s\*\*\*\s+Tasked\s+Beacon\s+(?P&lt;beacon&gt;.+)\s+to\s+exit\.
+EXTRACT-chat = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s&lt;(?P&lt;operator&gt;[^&gt;]+)&gt;\s+(?P&lt;message&gt;.*)
+
+[keystrokes]
+EXTRACT-date_time = ^(?P&lt;date_time&gt;\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+Received
+EXTRACT-metadata = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+Received\s+keystrokes\s+from\s+(?P&lt;user&gt;.+)\s+in\s+desktop\s+(?P&lt;desktop_num&gt;\d+).+^(?P&lt;application&gt;.+)=======
+EXTRACT-keystrokes = ^(?:\d+/\d+\s+\d+:\d+:\d+)\s+\w+\s+Received\s+keystrokes\s+[^\n]+\n^(?P&lt;keystrokes&gt;.*)
+</pre>
+<hr/>
+            <h2 id="credits">Credits</h2>
+            <p>This Splunk application was originally developed by Vincent Yiu. 
+                <br/>
+<a href="https://github.com/mgeeky/CobaltSplunk">Then extended to cover Cobalt Strike 4.3+ version</a>, include additional feature, support for screenshots/keystrokes/teamserver_events extraction by Mariusz B. / mgeeky (mb@binary-offensive.com). 
+                <br/>
+
+Parts of the code facilitating Setup page, virustotal querying logic were borrowed from 
+                <a href="https://splunkbase.splunk.com/app/4283/">VirusTotal Malware Lookup for Splunk</a> originally developed by ADARMA ( tomasz.dziwok@adamra.com ) 
+                <br/>
+            </p>
+            <h2 id="moreinfo">More Information</h2>
+            <ul>
+                <li>
+                    <a href="https://vincentyiu.com/red-team/attack-infrastructure/cobaltsplunk">Vincent Yiu's blog post on CobaltSplunk</a>
+                </li>
+                <li>
+                    <a href="https://github.com/vysecurity/CobaltSplunk">original CobaltSplunk Github repository</a>
+                </li>
+            </ul>
+        </html>
+    </row>
+</dashboard>

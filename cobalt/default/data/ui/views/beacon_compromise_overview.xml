@@ -1,0 +1,43 @@
+<form>
+  <label>Beacon Compromise Overview</label>
+  <fieldset submitButton="false">
+    <input type="text" token="qhost">
+      <label>Host Name</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="text" token="qextip">
+      <label>External IP</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="text" token="qintip">
+      <label>Internal IP</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Compromised Hosts</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats earliest(date_time) as earliest_date_time  values(external_ip) as external_ip values(internal_ip) as internal_ip by computer 
+| search computer="*$qhost$*" external_ip="*$qextip$*" internal_ip="*$qintip$*"</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

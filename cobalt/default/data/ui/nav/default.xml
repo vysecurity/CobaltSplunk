@@ -1,0 +1,9 @@
+<nav search_view="search">
+  <view name="search" default='true' />
+  <view name="datasets" />
+  <view name="readme" />
+  <!--<view name="setup_page_dashboard" />-->
+  <view name="reports" />
+  <view name="alerts" />
+  <view name="dashboards" />
+</nav>

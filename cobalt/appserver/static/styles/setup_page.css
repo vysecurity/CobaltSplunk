@@ -1,0 +1,8 @@
+.form-complex .help-block, .form-complex .help-outer {
+    top: 0;
+}
+
+[id^=form_section_vt] div.form-horizontal:not(:first-child) {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
