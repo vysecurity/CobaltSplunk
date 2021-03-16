@@ -1,0 +1,256 @@
+<dashboard>
+  <label>ATT&amp;CK</label>
+  <description>ATT&amp;CK Framework Correlation Across Beacons</description>
+  <row>
+    <panel>
+      <title>Command Line Usage (T1059)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+| rex max_match=0 field=command "^(?&lt;lines&gt;.+)\n*" 
+| mvexpand lines 
+| rename lines as command 
+| search command="shell *"
+| stats values(command) as command values(external_ip) as external_ip values(internal_ip) as internal_ip by computer | table computer command external_ip internal_ip</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Credential Dumping (T1003)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+| rex max_match=0 field=command "^(?&lt;lines&gt;.+)\n*" 
+| mvexpand lines 
+| rename lines as command 
+| search (command="hashdump" OR command="logonpasswords" OR command="dump hashes" OR command="run mimikatz's *" OR command="lsadump") AND command!="*sekurlsa::pth*"
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+|  stats values(command) as command values(external_ip) as external_ip values(internal_ip) as internal_ip by computer</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>DLL Injection (T1055)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+| rex max_match=0 field=command "^(?&lt;lines&gt;.+)\n*" 
+| mvexpand lines 
+| rename lines as command 
+| search command="inject *" OR command="run mimikatz's*" OR command="dump hashes" OR command="hashdump" 
+OR command="browserpivot *" OR command="dllinject *" OR command="dllload *" OR command="shinject *"
+| stats values(command) as command values(external_ip) as external_ip values(internal_ip) as internal_ip by computer | table computer command external_ip internal_ip</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Process Hollowing (T1093)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source | rex max_match=0 field=command "^(?&lt;lines&gt;.+)\n*" 
+| mvexpand lines 
+| rename lines as command | search command="spawn *" OR command="covertvpn" OR command="ssh *" OR command="ssh-key *" OR command="ppid *" OR command="spawnto *" OR command="shspawn *" OR command="bypassuac *"
+| stats values(command) as command values(external_ip) as external_ip values(internal_ip) as internal_ip by computer | table computer command external_ip internal_ip</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Download File (T1005)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log | stats values(_raw) as _raw values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source | rex max_match=0 field=_raw "^(?&lt;lines&gt;.+)\n*" | mvexpand lines 
+| rename lines as command | rex field=command "^[/A-Z0-9:\s]+\[task\]\s*(?:&lt;(?:T\d+(?:,\s*(?:T\d+))*),?\s*&gt;\s*)Tasked beacon to (?&lt;file&gt;.*)" 
+| search file="download *" 
+| stats values(file) as file count values(external_ip) as external_ip values(internal_ip) as internal_ip by computer 
+| rename count as download_count 
+| table computer file download_count external_ip internal_ip</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Upload File</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log | stats values(_raw) as _raw values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source | rex max_match=0 field=_raw "^(?&lt;lines&gt;.+)\n*" | mvexpand lines 
+| rename lines as command | rex field=command "[0-9\:\/\ ]*\[task\] Tasked beacon to (?&lt;file&gt;.*)" 
+| search file="upload *" 
+| stats values(file) as file values(external_ip) as external_ip values(internal_ip) as internal_ip by computer 
+| table computer file  external_ip internal_ip</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Service Manipulation (T1050, T1035)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip values(_raw) as _raw by source 
+| rex max_match=0 field=_raw "^(?&lt;lines&gt;.+)\n*" | mvexpand lines 
+| table computer lines external_ip internal_ip | rex field=lines "[0-9a-z\:\ \/]+(?&lt;message&gt;.*)" 
+| rex field=message mode=sed "s/\&lt;.*\&gt;//g" 
+| rex field=message mode=sed "s/\[.*\]//g" 
+| search message="*psexec*" OR message="*get system*" OR message="*-Service *" OR message="*scshell*" OR message="*scm*" OR message="*createservice*" OR message="*modsvc*" OR message="*sharpsc*" OR message="* sc * "OR message="* sc_*"
+| stats values(message) as message values(external_ip) as external_ip values(internal_ip) as internal_ip by computer
+| table computer message external_ip internal_ip</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>PowerShell Usage (T1086)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+| rex max_match=0 field=command "^(?&lt;lines&gt;.+)\n*" 
+| mvexpand lines 
+| rename lines as command 
+| search command="powershell *" OR command="powerpick *" OR command="psexec_psh *" OR command="wmi *" OR command="winrm *"
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+|  stats values(command) as command values(external_ip) as external_ip values(internal_ip) as internal_ip by computer</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Pass-The-Hash (T1075)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+| rex max_match=0 field=command "^(?&lt;lines&gt;.+)\n*" 
+| mvexpand lines 
+| rename lines as command 
+| search command="*sekurlsa::pth*" OR command="* pth *" OR command="*invoke-smbexec*" OR command="*sharpexec*" OR command="*invoke-wmiexec*" OR command="*invoke-thehash*"
+| rex field=command mode=sed "s/run mimikatz's sekurlsa::pth //g" 
+| rex field=command mode=sed "s/\/run.*//g" 
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+|  stats values(command) as command values(external_ip) as external_ip values(internal_ip) as internal_ip by computer</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>WMI Usage (T1047)</title>
+      <table>
+        <search>
+          <query>index=cobalt sourcetype=beacon_log 
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+| rex max_match=0 field=command "^(?&lt;lines&gt;.+)\n*" 
+| mvexpand lines 
+| rename lines as command 
+| search command="shell wmic *" OR command="* wmi *" OR command="*wmi_query*" OR command="*sharpsc*" OR command="*sharpwmi*" OR command="wmi *"
+| stats values(command) as command values(computer) as computer values(external_ip) as external_ip values(internal_ip) as internal_ip by source 
+|  stats values(command) as command values(external_ip) as external_ip values(internal_ip) as internal_ip by computer</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

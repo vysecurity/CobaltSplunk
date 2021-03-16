@@ -1,0 +1,147 @@
+[history/.dummy_history]
+version = 7.1.0
+modtime = 1525975226.568808300
+
+[savedsearches/SSH%20Login]
+version = 7.1.0
+modtime = 1525979096.713743000
+
+[ui-prefs/search]
+version = 7.1.0
+modtime = 1527003595.405338900
+
+[savedsearches/Beacon%20logs%20by%20beacon]
+version = 7.1.0
+modtime = 1525980864.949417200
+
+[savedsearches/Web%20Log%20by%20IP]
+version = 7.1.0
+modtime = 1525985456.027826600
+
+[savedsearches/Web%20Log%20by%20IP%20Map]
+version = 7.1.0
+modtime = 1525985470.779036400
+
+[views/cobalt_strike_overview]
+version = 7.1.0
+modtime = 1526066790.762800900
+
+[savedsearches/Beacon%20Log%20Metadata%20Template]
+version = 7.1.0
+modtime = 1525982015.516954500
+
+[props/beacon_log/EXTRACT-date_time]
+owner = admin
+version = 7.1.0
+modtime = 1525982621.541003700
+
+[props/beacon_log/EXTRACT-metadata]
+owner = admin
+version = 7.1.0
+modtime = 1526055514.267500400
+
+[props/beacon_log/EXTRACT-checkin]
+owner = admin
+version = 7.1.0
+modtime = 1525982846.128925200
+
+[props/beacon_log/EXTRACT-task]
+owner = admin
+version = 7.1.0
+modtime = 1525982957.246464900
+
+[props/beacon_log/EXTRACT-input]
+owner = admin
+version = 7.1.0
+modtime = 1525983015.450180800
+
+[props/beacon_log/EXTRACT-output]
+owner = admin
+version = 7.1.0
+modtime = 1525983537.512905400
+
+[props/beacon_log/EXTRACT-type]
+owner = admin
+version = 7.1.0
+modtime = 1525983374.811902400
+
+[savedsearches/Beacon%20Commands%20and%20Output%20by%20Beacon]
+version = 7.1.0
+modtime = 1525983574.125073900
+
+[savedsearches/Beacon%20External%20IP%20on%20Map]
+version = 7.1.0
+modtime = 1525984142.214537200
+
+[props/weblog/EXTRACT-weblog]
+owner = admin
+version = 7.1.0
+modtime = 1525985614.852501400
+
+[savedsearches/Web%20Log%20User%20Agent%20Count%20by%20IP]
+version = 7.1.0
+modtime = 1525986033.067546800
+
+[savedsearches/Web%20Log%20IR%20User%20Agent%20by%20IP]
+version = 7.1.0
+modtime = 1525986170.441594600
+
+[savedsearches/Web%20Log%20IR%20User%20Agent%20to%20Whois]
+version = 7.1.0
+modtime = 1525986810.954507900
+
+[savedsearches/ATT%26CK%20-%20Command%20Line%20T1059]
+version = 7.1.0
+modtime = 1526059694.732095300
+
+[views/attack]
+version = 7.1.0
+modtime = 1526063135.930689700
+
+[savedsearches/ATT%26CK%20-%20Credential%20Dumping]
+version = 7.1.0
+modtime = 1526062967.532397000
+
+[ui-prefs/job_manager]
+version = 7.1.0
+modtime = 1526057939.483190300
+
+[savedsearches/ATT%26CK%20-%20DLL%20Injection%20T1055]
+version = 7.1.0
+modtime = 1526059438.859184600
+
+[savedsearches/ATT%26CK%20-%20Download%20File%20%28T1005%29]
+version = 7.1.0
+modtime = 1526060339.420785500
+
+[savedsearches/ATT%26CK%20-%20Upload%20File]
+version = 7.1.0
+modtime = 1526060548.206583300
+
+[savedsearches/ATT%26CK%20-%20Process%20Hollowing%20%28T1093%29]
+version = 7.1.0
+modtime = 1526060836.834875800
+
+[savedsearches/ATT%26CK%20-%20Service%20Manipulation%20%28T1050%2C%20T1035%29]
+version = 7.1.0
+modtime = 1526062154.415767100
+
+[savedsearches/ATT%26CK%20PowerShell%20Usage%20%28T1086%29]
+version = 7.1.0
+modtime = 1526062403.439843100
+
+[savedsearches/ATT%26CK%20Pass-The-Hash%20%28T1075%29]
+version = 7.1.0
+modtime = 1526062793.981210500
+
+[savedsearches/ATT%26CK%20WMI%20%28T1047%29]
+version = 7.1.0
+modtime = 1526063122.515965000
+
+[savedsearches/Beacon%20-%20Compromised]
+version = 7.1.0
+modtime = 1526066935.648274700
+
+[views/beacon_compromise_overview]
+version = 7.1.0
+modtime = 1526067806.197686100
